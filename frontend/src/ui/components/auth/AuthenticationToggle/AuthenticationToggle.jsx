@@ -1,0 +1,34 @@
+import React from 'react';
+import useAuth from "../../../../hooks/useAuth.js";
+import {useNavigate} from "react-router";
+import {Button, Typography} from "@mui/material";
+
+const AuthenticationToggle = () => {
+
+    const {logout,isLoggedIn,user} = useAuth();
+
+    const navigate = useNavigate();
+
+    const handleLogin = () => {
+        navigate("/login");
+    }
+    const handleLogout = () => {
+        logout();
+        navigate("/login");
+    }
+
+    return (
+        <>
+        {isLoggedIn && <Typography style={{paddingRight: "25px",}}>{user.sub.toUpperCase()}</Typography> }
+            <Button
+            color="inherit"
+            variant={!isLoggedIn ? "text" : "outlined"}
+            onClick={!isLoggedIn ? handleLogin : handleLogout}>
+            {!isLoggedIn ? "Login" : "Logout"}
+        </Button>
+        </>
+
+    );
+};
+
+export default AuthenticationToggle;
