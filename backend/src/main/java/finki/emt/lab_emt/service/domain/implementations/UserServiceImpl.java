@@ -2,9 +2,9 @@ package finki.emt.lab_emt.service.domain.implementations;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Iterator;
 
 import finki.emt.lab_emt.model.exceptions.*;
-import finki.emt.lab_emt.repository.SmestuvanjeRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,16 +25,14 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ReservationRepository reservationRepository;
-    private final SmestuvanjeRepository smestuvanjeRepository;
 
 
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
-                           ReservationRepository reservationRepository, SmestuvanjeRepository smestuvanjeRepository) {
+                           ReservationRepository reservationRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.reservationRepository = reservationRepository;
-        this.smestuvanjeRepository = smestuvanjeRepository;
     }
 
     @Override
@@ -137,12 +135,9 @@ public class UserServiceImpl implements UserService {
         reservation.getSmestuvanje().setOccupied(true);
         reservationRepository.save(reservation);
 
-
+        user.getReservedReservations().add(reservation);
         user.getTemporaryReservations().remove(reservation);
-        AgencyUser user1 = userRepository.save(user);
-        user1.getReservedReservations().add(reservation);
-
-        userRepository.save(user1);
+        userRepository.save(user);
 
         return Optional.of(true);
     }
