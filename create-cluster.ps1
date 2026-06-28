@@ -1,0 +1,2 @@
+k3d cluster create kii-cluster --api-port 127.0.0.1:6550 -s 1 -a 2 -p "80:80@loadbalancer" -p "443:443@loadbalancer" --k3s-arg "--disable=traefik@server:0"
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.1/deploy/static/provider/cloud/deploy.yaml

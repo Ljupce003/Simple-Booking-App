@@ -33,6 +33,14 @@ spec:
                 configMapKeyRef:
                   name: postgres-config
                   key: postgres-db
+          volumeMounts:
+            - name: postgres-scripts
+              mountPath: /docker-entrypoint-initdb.d
+              readOnly: true
+      volumes:
+        - name: postgres-scripts
+          configMap:
+            name: postgres-scripts
 ---
 apiVersion: v1
 kind: Service
