@@ -54,6 +54,7 @@ public class DataInitializer {
             return;
         }
 
+        LocalDateTime now = LocalDateTime.now();
 
         Country countryNM = new Country("Macedonia","Europe");
         this.countryRepository.save(countryNM);
@@ -82,11 +83,20 @@ public class DataInitializer {
         AgencyUser host_user = new AgencyUser("host",passwordEncoder.encode("host"), UserRole.ROLE_HOST,"EMT-Host","Host_Surname");
         AgencyUser user_user = new AgencyUser("user",passwordEncoder.encode("user"),UserRole.ROLE_USER,"EMT-User","User_Surname");
 
-        this.userRepository.save(host_user);
-        this.userRepository.save(user_user);
+        host_user = this.userRepository.save(host_user);
+        user_user = this.userRepository.save(user_user);
 
-        this.userService.reserve(new Reservation(LocalDateTime.now().minusDays(2),LocalDateTime.now(),5,smestuvanje1),host_user.getUsername());
-        this.userService.reserve(new Reservation(LocalDateTime.now().minusMonths(13),LocalDateTime.now().minusMonths(3),15,smestuvanje2),user_user.getUsername());
+        Reservation hostReservation = this.reservationService
+                .save(new Reservation(now.minusDays(2), now, 5, smestuvanje1))
+                .orElseThrow(() -> new IllegalStateException("Failed to seed host reservation"));
+        host_user.getTemporaryReservations().add(hostReservation);
+        this.userRepository.save(host_user);
+
+        Reservation userReservation = this.reservationService
+                .save(new Reservation(now.minusMonths(13), now.minusMonths(3), 15, smestuvanje2))
+                .orElseThrow(() -> new IllegalStateException("Failed to seed user reservation"));
+        user_user.getTemporaryReservations().add(userReservation);
+        this.userRepository.save(user_user);
 
         this.userService.confirmReserveAll(user_user.getUsername());
 

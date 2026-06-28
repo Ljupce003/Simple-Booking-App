@@ -109,11 +109,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<Reservation> reserve(Reservation reservation, String username) throws SmestuvanjeOccupiedException {
 
-        // T-ODO add reservation check
         AgencyUser user = findByUsernameWithRelations(username);
+        checkReservationTimeSlot(reservation);
         Reservation r = this.reservationRepository.save(reservation);
-
-        checkReservationTimeSlot(r);
         user.getTemporaryReservations().add(r);
         this.userRepository.save(user);
 
@@ -165,9 +163,21 @@ public class UserServiceImpl implements UserService {
 
 
     private void checkReservationTimeSlot(Reservation reservation){
+        Long smestuvanjeId = reservation.getSmestuvanjeId();
+        if (smestuvanjeId == null || reservation.getStartDate() == null || reservation.getEndDate() == null) {
+            throw new IllegalArgumentException("Reservation requires smestuvanje, startDate and endDate");
+        }
+        if (!reservation.getStartDate().isBefore(reservation.getEndDate())) {
+            throw new IllegalArgumentException("Reservation startDate must be before endDate");
+        }
 
-        for (Reservation reservation1 : reservationRepository.findAllBySmestuvanje_Id(reservation.getSmestuvanjeId())) {
-            if(reservation.getStartDate().isBefore(reservation1.getStartDate()) && reservation.getEndDate().isAfter(reservation1.getEndDate())){
+        for (Reservation reservation1 : reservationRepository.findAllBySmestuvanje_Id(smestuvanjeId)) {
+            if (reservation.getId() != null && reservation.getId().equals(reservation1.getId())) {
+                continue;
+            }
+            boolean overlaps = reservation.getStartDate().isBefore(reservation1.getEndDate()) &&
+                    reservation.getEndDate().isAfter(reservation1.getStartDate());
+            if(overlaps){
                 throw new SmestuvanjeOccupiedException();
             }
         }
