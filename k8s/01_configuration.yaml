@@ -24,10 +24,6 @@ metadata:
 data:
   postgres-db: emt_lab_ps
 
-  # for local i will use standard storage class on k3d (local-path)
-  # but for migrating to Azure or AWS then we change the name here
-  storage-class-name: local-path
-
 ---
 # Schema and view scripts mounted into Postgres on first startup
 apiVersion: v1

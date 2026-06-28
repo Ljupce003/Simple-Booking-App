@@ -34,6 +34,8 @@ spec:
                   name: postgres-config
                   key: postgres-db
           volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
             - name: postgres-scripts
               mountPath: /docker-entrypoint-initdb.d
               readOnly: true
@@ -41,6 +43,16 @@ spec:
         - name: postgres-scripts
           configMap:
             name: postgres-scripts
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: local-path
+        resources:
+          requests:
+            storage: 1Gi
 ---
 apiVersion: v1
 kind: Service
