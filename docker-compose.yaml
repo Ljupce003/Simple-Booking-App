@@ -2,10 +2,14 @@ services:
   database:
     image: postgres:17.4
     restart: always
+
+    env_file:
+      - .env
+
     environment:
-      POSTGRES_USER: emt
-      POSTGRES_PASSWORD: emt
-      POSTGRES_DB: emt_lab_ps
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
     volumes:
       - postgres_db_data:/var/lib/postgresql/data
       - "./backend/init.sql:/docker-entrypoint-initdb.d/init.sql"
@@ -14,7 +18,7 @@ services:
       - "2345:5432"
 
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U emt -d emt_lab_ps" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -26,10 +30,14 @@ services:
     build: ./backend
     ports:
       - "8080:8080"
+
+    env_file:
+      - .env
+
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/emt_lab_ps
-      SPRING_DATASOURCE_USERNAME: emt
-      SPRING_DATASOURCE_PASSWORD: emt
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/${DB_DATABASE}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
     depends_on:
       database:
         condition: service_healthy # Waits for health check

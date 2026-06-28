@@ -1,0 +1,30 @@
+# Here i configure the namespace for the cluster
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kii-project
+---
+# Here i add secrets for the sensitive data used in the cluster
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+  namespace: kii-project
+type: Opaque
+stringData:
+  postgres-username: emt
+  postgres-password: emt
+---
+# Here i add configuration map for the less sensitive data used in the cluster
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: kii-project
+data:
+  postgres-db: emt_lab_ps
+
+  # for local i will use standard storage class on k3d (local-path)
+  # but for migrating to Azure or AWS then we change the name here
+  storage-class-name: local-path
+
