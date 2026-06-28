@@ -89,14 +89,13 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ~/Simple-Booking-App/
+            cd ~/Simple-Booking-App
             
-            # 1. Fetch latest images from DockerHub
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
+            # Fetch latest code from GitHub
+            git pull origin main
             
-            # 2. Restart the containers with the new images
-            docker-compose up -d
+            # Start inplace again by rebuilding 
+            docker-compose up -d --build
             
-            # 3. Clean out the old images
+            # Исчисти ги старите слики
             docker image prune -f
