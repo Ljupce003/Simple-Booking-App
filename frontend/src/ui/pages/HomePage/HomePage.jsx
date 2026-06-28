@@ -9,7 +9,7 @@ const HomePage = () => {
                     Welcome to Booking App! 👋
                 </Typography>
                 <Typography variant="body1" sx={{ mb: 4 }}>
-                    This is the home page for the booking app.
+                    This is the home page for the simple booking app.
                 </Typography>
             </Container>
         </Box>

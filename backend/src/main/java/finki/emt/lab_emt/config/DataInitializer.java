@@ -65,7 +65,7 @@ public class DataInitializer {
         Host host = new Host("Peter","Griffin",countryNM);
         Optional<Host> optionalHost = this.hostService.save(host);
         if(optionalHost.isPresent()) host = optionalHost.get();
-        this.hostService.save(new Host("Bojana","Jovancheva",countryBR));
+        this.hostService.save(new Host("Jovana","Jovanova",countryBR));
         Host host1 = new Host("Aleksandar","McDonald",countryBR);
         Optional<Host> optionalHost1 = this.hostService.save(host1);
         if(optionalHost1.isPresent()) host1 = optionalHost1.get();
