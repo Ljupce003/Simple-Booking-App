@@ -79,7 +79,8 @@ jobs:
 
   deploy-to-cloud:
     needs: [ build-and-push-frontend, build-and-push-backend ]
-    runs-on: ubuntu-latest
+    environment: GITHUB_ACTIONS_DOCKER_ENV
+    runs-on: ubuntu-24.04
     steps:
       - name: Deploy to Azure VM
         uses: appleboy/ssh-action@v1.0.3
